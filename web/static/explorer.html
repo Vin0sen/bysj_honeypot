@@ -1,0 +1,142 @@
+<html>
+<head>
+    <title>OWASP Honeypot</title>
+    <!-- import css files -->
+    <link rel="stylesheet" href="/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="/css/materialize.min.css">
+    <link rel="stylesheet" href="/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- style.css used as general css file for index.html -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/datatables.min.css"/>
+    <link rel="stylesheet" href="/css/dataTables.checkboxes.css">
+    <!-- import js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/datatables.min.js"></script>
+    <script src="/js/dataTables.checkboxes.min.js"></script>
+    <script src="/js/Chart.min.js"></script>
+    <script src="/js/jquery.dataTables.min.js"></script>
+    <script src="/js/materialize.min.js"></script>
+    <script src="/js/dataTables.buttons.min.js"></script>
+    <script src="/js/jszip.min.js"></script>
+    <script src="/js/buttons.html5.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!-- main.js used as general js file for index.html -->
+    <script src="/js/main.js"></script>
+    <script src="/js/explore.js"></script>
+    <script src="/js/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<!-- start body -->
+<div class="container" style="margin-top:80px">
+    <div id="log-explorer">
+        <div id="collapseOne" class="collapse show" data-parent="#accordion">
+            <form>
+                <div class="form-row" id="log-explorer-params">
+                    <div class="form-group col-md-6">
+                        <label for="event_type">{{ data.event_type }}: </label>
+                        <select class="form-control" name="event_type" id="event_type" onchange="change_form()">
+                            <option selected value="">{{ data.choose }}</option>
+                            <option value="honeypot">{{ data.honeypot_events }}</option>
+                            <option value="network">{{ data.network_events }}</option>
+                            <option value="credential">{{ data.credential_events }}</option>
+                            <option value="file">{{ data.file_change_events }}</option>
+                            <option value="data">{{ data.data_events }}</option>
+                            <option value="pcap">{{ data.pcap_archive_files }}</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-6" id="module_list">
+                        <label for="">{{ data.module_name }}: </label>
+                        <select class="form-control" name="module_names" id="module_names" disabled=true>
+                        </select>
+                    </div>
+                </div>
+                <!-- 起止时间 -->
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="start_date">{{ data.start_date }}: </label>
+                        <input type="date" class="form-control" id="start_date">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="end_date">{{ data.end_date }}: </label>
+                        <input type="date" class="form-control" id="end_date">
+                    </div>
+                </div>
+                <div class="alert alert-danger" id="error-message-element" role="alert" hidden></div>
+                <!-- 搜索按钮 -->
+                <div class="form-group">
+                    <button type="button" class="btn btn-info btn-sm"
+                            onclick="search_database()">{{ data.search }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="log-explorer-table" class="row" style="margin-left:100px; margin-right:100px;">
+    <div class="container">
+        <div class="card material-table">
+            <table id="datatable" class="table striped responsive" style="float:center;">
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- end of analytics-->
+
+<div id="footer"></div>
+<script>
+    // 插入页眉和页脚
+    fetch('component/header.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('header').innerHTML = html;
+        });
+    fetch('component/footer.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('footer').innerHTML = html;
+        });
+</script>
+
+<script>
+    // 设置默认起止时间  3 days prior to today and today
+    document.addEventListener('DOMContentLoaded', function() {
+        var today = new Date();
+        var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3);
+
+        // Format the date to "YYYY-MM-DD"
+        var formatDate = function(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        };
+
+        // Set the values of the inputs
+        document.getElementById('start_date').value = formatDate(lastWeek);
+        document.getElementById('end_date').value = formatDate(today);
+    });
+</script>
+
+<script>
+    const translations = {{ encoded_data | safe}};
+</script>
+<!-- main.js used as general js file for index.html -->
+<script src="/js/main.js"></script>
+<script src="/js/explore.js"></script>
+<br>
+<!-- end of body -->
+</body>
+
+</html>

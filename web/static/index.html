@@ -1,0 +1,131 @@
+<html>
+<head>
+    <!-- header -->
+    <title>OWASP Honeypot</title>
+    <!-- import css files -->
+    <link rel="stylesheet" href="/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="/css/materialize.min.css">
+    <link rel="stylesheet" href="/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- style.css used as general css file for index.html -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/datatables.min.css"/>
+    <link rel="stylesheet" href="/css/dataTables.checkboxes.css">
+    <!-- import js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/datatables.min.js"></script>
+    <script src="/js/dataTables.checkboxes.min.js"></script>
+    <script src="/js/Chart.min.js"></script>
+    <script src="/js/jquery.dataTables.min.js"></script>
+    <script src="/js/materialize.min.js"></script>
+    <script src="/js/dataTables.buttons.min.js"></script>
+    <script src="/js/jszip.min.js"></script>
+    <script src="/js/buttons.html5.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!-- main.js used as general js file for index.html -->
+    <script src="/js/main.js"></script>
+    <script src="/js/explore.js"></script>
+    <script src="/js/xlsx.full.min.js"></script>
+    <!-- end of header -->
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<!-- start body -->
+<div class="container" style="margin-top:80px">
+    <div id="dashboard">
+        <!-- body analytics--><br>
+        <div style="display: flex; padding: 20px; align-items: center;">
+            <div style="width:30%;">
+                <ul>
+                    <li>{{ data.total_events }}: <b><a id="count_all_events">x</a></b></li>
+                    <li>{{ data.total_honeypot_events }}: <b><a id="count_honeypot_events">x</a></b></li>
+                    <li>{{ data.total_network_events }}: <b><a id="count_network_events">x</a></b></li>
+                    <li>{{ data.total_credential_events }}: <b><a id="count_credential_events">x</a></b></li>
+                    <li>{{ data.total_file_events }}: <b><a id="count_file_events">x</a></b></li>
+                    <li>{{ data.total_data_events }}: <b><a id="count_data_events">x</a></b></li>
+                    <li>{{ data.total_pcap_events }}: <b><a id="count_pcap_events">x</a></b></li>
+                </ul>
+            </div>
+            <!-- using API (main.js) to show some analytics -->
+            <div style="width:70%;">
+                <!-- graph takes 5 seconds to load, we need to wait all requests get responded before showing them -->
+                <blink id="blink_loading_graph">
+                    <span>{{ data.loading_info }}</span><!-- this will disappear after graph appears -->
+                </blink>
+                <!-- graph will be located here, and it shows 1-past week all events 2-honeypot events 3-network events -->
+                <!-- graph will get automatically updated if anything changes in network every 60 seconds -->
+                <!-- its using main.js to communicating with API -->
+                <canvas class="align-content-center text-center modal-dialog-centered" id="past_week_events_graph"></canvas>
+                <button class="button" onclick="downloadChart('past_week_events_graph')" hidden>
+                    <img src="img/download-icon.png" width="40" height="40"> Download
+                </button>
+            </div>
+        </div>
+
+
+        <br>
+        <div style="text-align: center;">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <canvas id="top_ten_ips_in_honeypot_events_graph" width="400" height="450">
+                    </canvas>
+                    <button class="button" onclick="downloadChart('top_ten_ips_in_honeypot_events_graph')" hidden>
+                        <img src="img/download-icon.png" width="40" height="40"></button>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="top_ten_ips_in_network_events_graph" width="400" height="450">
+                    </canvas>
+                    <button class="button" onclick="downloadChart('top_ten_ips_in_network_events_graph')" hidden>
+                        <img src="img/download-icon.png" width="40" height="40"></button>
+                </div>
+                <br>
+                <div class="col-md-6">
+                    <canvas id="top_ten_ports_in_honeypot_events_graph" width="400" height="450">
+                    </canvas>
+                    <button class="button" onclick="downloadChart('top_ten_ports_in_honeypot_events_graph')" hidden>
+                        <img src="img/download-icon.png" width="40" height="40"></button>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="top_ten_ports_in_network_events_graph" width="400" height="450">
+                    </canvas>
+                    <button class="button" onclick="downloadChart('top_ten_ports_in_network_events_graph')" hidden>
+                        <img src="img/download-icon.png" width="40" height="40"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- end of analytics-->
+
+<div id="footer"></div>
+<script>
+    // 插入页眉和页脚
+    fetch('component/header.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('header').innerHTML = html;
+        });
+    fetch('component/footer.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('footer').innerHTML = html;
+        });
+</script>
+
+<script>
+    const translations = {{ encoded_data | safe}};
+</script>
+<!-- main.js used as general js file for index.html -->
+<script src="/js/main.js"></script>
+<script src="/js/explore.js"></script>
+<br>
+<!-- end of body -->
+</body>
+
+</html>

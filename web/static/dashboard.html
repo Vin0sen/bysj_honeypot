@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="-8">
+    <meta nameviewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Server</title>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/world.js"></script>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        pre.json-output {
+            white-space: pre-wrap;       /* 保持空格和换行 */
+            word-wrap: break-word;       /* 长单词也能换行 */
+            font-family: Cascadia Mono monospace; 
+            background-color: #f8f9fa;    /* 浅灰色背景 */
+            padding: 10px 0 10px 20px;
+            border: 1px solid #ddd;       /* 边框 */
+            border-left-width: 6px;       /* 左边边框加宽 */
+            margin-top: 10px; margin-bottom: 50px;
+        }
+        input {
+            height: 33px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <img src="img/logo.png" alt="Logo" class="logo" />
+    <ul class="nav-links">
+        <li><a href="/">Dashboard</a></li>
+        <li><a href="/explorer">Explorer</a></li>
+        <li><a href="/honeypot.html">Honeypot</a></li>
+        <li><a href="/charts">Charts</a></li>
+    </ul>
+</div>
+<div class="main">
+    <div id="countryAnalysis">
+        <div id="heatmap" class="charts"></div>
+        <div id="bary" class="charts" style="height: 400px"></div>
+    </div>
+    <button id="reloadButton" style="height: 50px;">Reload Data</button>
+    <div id="trend" class="charts" style="width: 800px;height:400px;margin: 20px auto;"></div>
+    <div id="barIP" class="charts"></div>
+
+    <div class="main">
+        <form id="searchForm" method="POST">
+            <input type="text" id="search-box" name="query" 
+            placeholder="Enter IP address" style="padding-left: 1em;"/>
+            <input type="submit" value="Search" style="background-color:rgb(244, 255, 162)">
+        </form>
+        <pre id="jsonOutput" class="json-output"></pre>
+    </div>
+</div>
+<div id="footer"></div>
+<script>
+    fetch('component/footer.html')
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById('footer').innerHTML = html;
+    });
+</script>
+
+<script src="js/dashboard.js"></script>
+<script>
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 阻止表单的默认提交行为
+        var ipInput = document.getElementById('search-box').value;
+        if (validateIP(ipInput)){
+            searchIP(ipInput);
+        }
+    });
+
+    function searchIP(ipInput) {
+        fetch('/api/searchip', {
+            method: 'POST', // 假设接口需要POST方法
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                query: ipInput // 从输入框获取IP地址
+            }),
+        })
+        .then(response => response.json()) // 解析响应为JSON
+        .then(data => {
+            document.getElementById('jsonOutput').textContent = JSON.stringify(data, null, 4); // 格式化JSON输出
+        })
+        .catch((error) => {console.error('Error:', error);});
+    }
+    function validateIP(ipInput) {  
+        var ipRegex = /((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}/;  
+        if (!ipRegex.test(ipInput)) {  
+            alert('Please enter a valid IP address.');  
+            return false;  
+        }  
+        return true;  
+    }  
+</script>
+</body>
+</html>

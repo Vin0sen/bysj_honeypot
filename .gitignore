@@ -1,0 +1,29 @@
+# Compiled python files
+*.pyc
+
+# ignore IDE settings
+*.idea*
+
+# setup
+build/*
+dist/*
+*egg-info*
+
+# tmp files
+tmp/*
+pcapfiles/*
+*.py~
+*.log
+results.*
+*.DS_Store
+*.swp
+venv/*
+
+# codacy
+.coverage
+coverage.xml
+
+# docker compose
+data/db
+# self-create
+*.sh

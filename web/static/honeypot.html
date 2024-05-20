@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search IP</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        /* body {
+            margin: 20px auto;  
+            width: 80%;
+        } */
+    </style>
+    <script src="js/echarts.min.js"></script>
+</head>
+<body>
+<div class="navbar">
+    <img src="img/logo.png" alt="Logo" class="logo" />
+    <ul class="nav-links">
+        <li><a href="/">Dashboard</a></li>
+        <li><a href="/explorer">Explorer</a></li>
+        <li><a href="/honeypot.html">Honeypot</a></li>
+        <li><a href="/charts">Charts</a></li>
+    </ul>
+</div>
+<div class="charts main">
+    <div class="container">
+        <div class="left">
+            <h2>节点状态</h2><br>
+            <ul>
+                <li>在线蜜罐: <span class="totalhps"></span></li>
+                <li>总蜜罐数: <span class="totalhps"></span></li>
+            </ul>
+            
+            <div id="gauge"></div>
+        </div>
+        <div class="right">
+            <h2>可用 honeypot templates</h2>
+	    <ol style="padding-left:20px">
+                <li>ohp_db_mysql</li>
+                <li>ohp_fastjson_1-2-24</li>
+                <li>ohp_fastjson_1-2-27</li>
+                <li>ohp_ftp_strong_password</li>
+                <li>ohp_ftp_weak_password</li>
+                <li>ohp_log4j_cve20175645</li>
+                <li>ohp_log4j_cve202144228</li>
+                <li>ohp_redis_cve20220543</li>
+                <li>ohp_shiro_550</li>
+                <li>ohp_shiro_721</li>
+                <li>ohp_smtpserver_strong_password</li>
+                <li>ohp_spring_cloud_function</li>
+                <li>ohp_spring_cve20181270</li>
+                <li>ohp_sshserver_cve201815473</li>
+                <li>ohp_sshserver_strong_password</li>
+                <li>ohp_sshserver_weak_password</li>
+                <li>ohp_thinkphp_v5rce</li>
+                <li>ohp_tomcat_cve201712615</li>
+                <li>ohp_tomcat_weak_password</li>
+                <li>ohp_weblogic_cve201710271</li>
+		<li>ohp_icsserver_veeder_root_guardian_ast</li>
+            </ol>
+	</div>
+    </div>
+</div>
+<script>
+var gaugeChart = echarts.init(document.getElementById('gauge'));
+async function setGaugeData() {
+    var gaugeChart = echarts.init(document.getElementById('gauge'));
+    try {
+        const response = await fetch('/api/gauge');
+        const gaugeData = await response.json();
+        
+        const spans = document.getElementsByClassName('totalhps');
+        spans[0].textContent = gaugeData.value;
+        spans[1].textContent = gaugeData.max;
+
+        var gaugeOption = {
+            series: [
+                {
+                    type: 'gauge',
+                    min: 0,
+                    max: gaugeData.max,
+                    splitNumber: 5,  // 分成 5 个刻度
+                    progress: {
+                        show: true,
+                        width: 8
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            width: 8
+                        }
+                    },
+                    axisTick: {show: false},  // 隐藏小刻度
+                    splitLine: {
+                        length: 6,
+                        lineStyle: {
+                          width: 2,
+                          color: '#999'
+                        }
+                    },
+                    axisLabel: {
+                        distance: 15,
+                        formatter: function (value) {
+                            return value.toFixed(0);  // 只显示整数刻度
+                        },
+                        fontSize: 14
+                    },
+                    pointer: {
+                        width: 5
+                    },
+                    detail: {
+                        formatter: function (value) {
+                            return `${value} / ${gaugeData.max}`;
+                        },
+                        fontSize: 16,
+                        offsetCenter: [0, '80%']
+                    },
+                    data: [{value: gaugeData.value}]
+                }
+            ]
+        };
+        gaugeChart.setOption(gaugeOption);
+    } catch (error) {
+        console.error("Error loading the gauge data: ", error);
+    }
+}
+setGaugeData();
+
+</script>
+
+</body>
+</html>

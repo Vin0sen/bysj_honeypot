@@ -1,0 +1,201 @@
+body {
+    background: url("/img/background.jpeg")
+}
+
+.dt-button.btn {
+    background-color: rgba(1, 19, 16, 0.6);
+}
+
+#logo {
+    height: 50px;
+    width: auto;
+    filter: contrast(150%);
+}
+
+#titlebar {
+    background-color: rgb(117 137 167 / 35%);
+    text-decoration-color: #ab81bf59;
+}
+
+.file-archive-explorer-label,
+.log-explorer-label {
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 7px;
+    margin-right: 7px;
+}
+
+#file-datatable,
+#log-datatable {
+    float: center;
+}
+
+#error-message-element{
+    text-align: center;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+div.material-table {
+    padding: 20;
+}
+
+div.material-table .table-title {
+    font-size: 20px;
+    color: #000;
+}
+
+div.material-table table tr td {
+    padding: 0 0 0 56px;
+    height: 48px;
+    width: auto;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.87);
+    border-bottom: solid 1px #DDDDDD;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div.material-table table tr td a {
+    color: inherit;
+}
+
+div.material-table table tr td a i {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+div.material-table table tr {
+    font-size: 12px;
+}
+
+div.material-table table th {
+    font-size: 12px;
+    color: #3f3e3e;
+    cursor: pointer;
+    white-space: nowrap;
+    height: 40px;
+    vertical-align: middle;
+    outline: none !important;
+    background-color: #c2c4c3;
+    -webkit-column-width: auto;
+    /* border: 1px solid #f00 */
+}
+
+div.material-table table th.sorting_asc,
+div.material-table table th.sorting_desc {
+    color: rgba(0, 0, 0, 0.87);
+}
+
+div.material-table table th.sorting:after,
+div.material-table table th.sorting_asc:after,
+div.material-table table th.sorting_desc:after {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    word-wrap: normal;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    display: none;
+    vertical-align: middle;
+}
+
+div.material-table table th.sorting:hover:after,
+div.material-table table th.sorting_asc:after,
+div.material-table table th.sorting_desc:after {
+    display: inline-block;
+}
+
+div.material-table table th.sorting_desc:after {
+    content: "";
+}
+
+div.material-table table tbody tr:hover {
+    background-color: #EEE;
+}
+
+div.material-table table th:last-child,
+div.material-table table td:last-child {
+    padding: 0 10px 0 4px;
+}
+
+[am-TopLogo] {
+    max-height: 70px;
+    max-width: 210px;
+    margin: 12px 11px;
+}
+
+canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+blink {
+    -webkit-animation: 2s linear infinite condemned_blink_effect;
+    animation: 2s linear infinite condemned_blink_effect;
+}
+
+
+.language-selector {
+    text-align: center;
+    max-width: 80%;
+    width: 300px;
+    margin: 1rem auto;
+}
+
+@-webkit-keyframes condemned_blink_effect {
+    0% {
+        visibility: hidden;
+    }
+    50% {
+        visibility: hidden;
+    }
+    100% {
+        visibility: visible;
+    }
+}
+
+@keyframes condemned_blink_effect {
+    0% {
+        visibility: hidden;
+    }
+    50% {
+        visibility: hidden;
+    }
+    100% {
+        visibility: visible;
+    }
+}
+
+.button {
+    padding: 3px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: .1s;
+    border: grey 1px solid;
+    margin-bottom: 1rem;
+    margin-top: 16px
+}
+
+.button:hover {
+    transform: scale(1.05);
+}
+
+table thead tr {
+    text-align: center;  /* 居中表头 */
+}
+/* 设置表格列的最大宽度 */  
+table > thead > tr > th,  
+table > tbody > tr > td {  
+  max-width: 150px; /* 设置你需要的最大宽度 */  
+  white-space: nowrap; /* 防止内容换行，保持在一行内 */  
+  overflow: hidden; /* 隐藏超出列宽的内容 */  
+  text-overflow: ellipsis; /* 用省略号表示被隐藏的内容 */  
+}

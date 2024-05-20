@@ -1,0 +1,215 @@
+/* 1. heatmap + bar-y + pie */
+// 基于准备好的容器初始化 echarts 实例
+var heatmapChart = echarts.init(document.getElementById('heatmap'));
+var barChart = echarts.init(document.getElementById('bary'));
+var barIPChart = echarts.init(document.getElementById('barIP'));
+var trendChart = echarts.init(document.getElementById('trend'));
+
+async function setCountryChart() {
+    try {
+        const response = await fetch('/api/heatmap/country');
+        const data = await response.json();
+
+        // 使用返回的数据设置 ECharts 配置项
+        var option = {
+            title: {text: '攻击来源国家/地区分布', left: 'center'},
+            tooltip: {trigger: 'item'},
+            visualMap: {
+                min: 100, max: 100000, // 根据数据范围进行调整
+                left: 'left', top: 'bottom',
+                text: ['高', '低'],
+                calculable: true
+            },
+            series: {
+                name: '攻击次数',
+                type: 'map', mapType: 'world',
+                itemStyle: {
+                    emphasis: { label: { show: true } }
+                },
+                data: data  // 从接口加载的数据
+            },toolbox: {feature: {saveAsImage: { show: true }}}
+  	};
+        heatmapChart.setOption(option);
+        
+        const top10 = data.slice(0, 10);
+        var option2 = getOption_country_barchart(top10);
+        barChart.setOption(option2);
+    } catch (error) {
+        console.error("Error loading the heatmap data: ", error);
+    }
+}
+
+
+/* 2. 仪表盘 */
+
+
+/* 3. 条形统计图 */
+async function setBarData(){
+    try{
+        const response = await fetch('/api/heatmap/ip');
+        const data = await response.json();
+
+        var option = {
+            title: { text: 'Top 10 IPs that launched the attack'},
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'shadow'
+              }
+            },
+            legend: {},
+            xAxis: {
+              type: 'value',
+              boundaryGap: [0, 0.01]
+            },
+            yAxis: {
+              type: 'category', inverse: true,
+              data: data.map(data => data.key)
+            },
+            series: [
+              {
+                name: 'Total attacks',
+                type: 'bar',
+                realtimeSort: true,
+                label: {
+                    show: true,
+                    precision: 1,
+                    position: 'right',
+                    fontFamily: 'monospace'
+                },
+                data: data.map(data => data.doc_count)
+              }
+            ],toolbox: {feature: {saveAsImage: { show: true }}}
+          };
+          barIPChart.setOption(option);
+
+    } catch(error){
+        console.error("Error loading the bar data: ", error);
+    }
+}
+
+/* 4. 折线图 */
+async function setTrendChart() {
+    try {
+        const response = await fetch('/component/count_perday.json');
+        const data = await response.json();
+
+        var today = new Date();
+        var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 15);
+        var formatDate = function(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        };
+
+        var option = {
+            title: {
+                text: '过去15天的连接情况'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['count']
+            },
+            xAxis: {
+                type: 'category',
+                data: data.map(ele => ele.date)
+            },
+            yAxis: {
+                type: 'value'
+            },
+            /*dataZoom: [
+                {startValue: formatDate(lastWeek)},
+                {type: 'inside'}
+            ],*/
+            series: [{
+                name: 'count', type: 'line',
+                data: data.map(ele => ele.count)
+            }],
+	    toolbox: {
+   		feature: {
+      		    saveAsImage: { show: true } // 保存图表
+    	    	}
+  	    }
+        };
+        trendChart.setOption(option);
+    } catch (error) {
+        console.error("Error loading the trend data: ", error);
+    }
+}
+
+/* return option for charts*/
+function getOption_country_barchart(data){
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 100;
+    return {
+        backgroundColor: {
+            type: 'pattern',
+            image: canvas,
+            repeat: 'repeat'
+        },
+        tooltip: {},
+        title: {
+            text: 'Top 10 regions where IPs are from',
+            left: '50%',
+            textAlign: 'center'
+        },
+        grid: {
+            top: 50,
+            width: '50%',
+            // bottom: '45%',
+            left: 10,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            splitLine: {show: true}
+        },
+        yAxis: {
+            type: 'category',inverse: true,
+            data: data.map(data => data.name),
+            axisLabel: {
+                interval: 0,
+                rotate: 30
+            },
+            splitLine: {show: false}
+        },
+        series: [
+            {
+                type: 'bar',
+                stack: 'chart',
+                z: 3,
+                label: {
+                    position: 'right',
+                    show: true,
+                },
+                data: data
+            },
+            {
+                type: 'pie',
+                radius: [0, '30%'],
+                center: ['75%', '50%'],
+                data: data,
+            }
+        ],toolbox: {feature: {saveAsImage: { show: true }}}
+    };
+}
+
+
+// 监听按钮点击事件
+document.getElementById('reloadButton').onclick = function () {
+    setCountryChart(); // 调用函数重新加载数据并绘制图表
+    // setGaugeData();
+};
+// setInterval(function () {}, 2000);
+/* End. 页面加载时初始化两种图表 */
+setCountryChart();
+setBarData();
+setTrendChart();
