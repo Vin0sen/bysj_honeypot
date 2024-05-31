@@ -645,7 +645,7 @@ def searchip():
     if ip:
         url = "https://api.threatbook.cn/v3/scene/ip_reputation"
         query = {
-            "apikey": "685e5e98514c401eae3645781e63b3493a0438b3dac04867a46705d93e7452f4",
+            "apikey": "685e5e98...5d93e7452f4",# threatbook ip reputation apikey
             "resource": request.json.get("query")
         }
         return requests.request("GET", url, params=query).text

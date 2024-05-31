@@ -125,10 +125,10 @@ async function setTrendChart() {
             yAxis: {
                 type: 'value'
             },
-            /*dataZoom: [
+            dataZoom: [
                 {startValue: formatDate(lastWeek)},
                 {type: 'inside'}
-            ],*/
+            ],// 显示区间,默认显示全部x轴值
             series: [{
                 name: 'count', type: 'line',
                 data: data.map(ele => ele.count)
